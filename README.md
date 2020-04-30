@@ -39,7 +39,7 @@ Perintah `mkdir [direktori tujuan]` digunakan sebagai tujuan pembuatan FUSE <br 
 Disini kami membuat direktori bernama <b> encv1_ </b>
 - Menjalankan FUSE <br />
 Perintah `./[output] [direktori tujuan]` digunakan untuk menjalankan FUSE pada direktori yang telah dibuat. <br />
-Untuk menjalankannya kami menggunakan perintah `./ssfs encv1`
+Untuk menjalankannya kami menggunakan perintah `./ssfs encv1_`
 
 ##### Tampilan direktori `encv1_` setelah dijalankan pada linux
 ![hasil run](https://user-images.githubusercontent.com/16980689/80702623-93df2f80-8b0b-11ea-94f5-8fb42610294c.PNG) <br />
