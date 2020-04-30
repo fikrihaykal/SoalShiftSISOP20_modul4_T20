@@ -41,8 +41,8 @@ Disini kami membuat direktori bernama <b> encv1_ </b>
 Perintah `./[output] [direktori tujuan]` digunakan untuk menjalankan FUSE pada direktori yang telah dibuat. <br />
 Untuk menjalankannya kami menggunakan perintah `./ssfs encv1`
 
-##### Tampilan _ssfs_ setelah dijalankan pada linux
-
+##### Tampilan direktori `encv1_` setelah dijalankan pada linux
+![hasil run](https://user-images.githubusercontent.com/16980689/80702623-93df2f80-8b0b-11ea-94f5-8fb42610294c.PNG) <br />
 
 ### SOAL 4
 Log system:
