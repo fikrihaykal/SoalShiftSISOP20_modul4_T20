@@ -52,14 +52,14 @@ Log system:
 - Sisanya, akan dicatat dengan level INFO.
 - Format untuk logging yaitu: `[LEVEL]::[yy][mm][dd]-[HH]:[MM]:[SS]::[CMD]::[DESC ...]`
 ```
-LEVEL    : Level logging 
-yy   	 : Tahun dua digit
-mm    	 : Bulan dua digit
-dd    	 : Hari dua digit
-HH    	 : Jam dua digit
-MM    	 : Menit dua digit
-SS    	 : Detik dua digit
-CMD     	 : System call yang terpanggil
+LEVEL     : Level logging 
+yy   	    : Tahun dua digit
+mm    	  : Bulan dua digit
+dd    	  : Hari dua digit
+HH    	  : Jam dua digit
+MM    	  : Menit dua digit
+SS    	  : Detik dua digit
+CMD       : System call yang terpanggil
 DESC      : Deskripsi tambahan (bisa lebih dari satu, dipisahkan dengan ::)
 ```
 - Contoh format logging nantinya seperti:
