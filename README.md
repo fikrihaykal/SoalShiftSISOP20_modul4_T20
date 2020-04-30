@@ -33,7 +33,7 @@ Syntax : `nano ssfs.c` <br />
 ___source code : [ssfs.c](https://github.com/fikrihaykal/SoalShiftSISOP20_modul4_T20/blob/master/ssfs.c)___ <br />
 - Compile FUSE <br />
 Perintah ``` gcc -Wall `pkg-config fuse --cflags` [file.c] -o [output] `pkg-config fuse --libs` ``` digunakan untuk mengcompile program FUSE. <br />
-Syntax : `gcc soal1.c -o soal1` <br />
+Syntax : ``` gcc -Wall `pkg-config fuse --cflags` ssfs.c -o ssfs `pkg-config fuse --libs` ``` <br />
 - Membuat sebuah direktori <br />
 Perintah `mkdir [direktori tujuan]` digunakan sebagai tujuan pembuatan FUSE <br />
 Disini kami membuat direktori bernama <b> encv1_ </b>
