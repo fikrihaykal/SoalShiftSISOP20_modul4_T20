@@ -586,7 +586,7 @@ INFO::200419-18:29:33::RENAME::/iz1/yena.jpg::/iz1/yena.jpeg
 
 ### Penyelesaian SOAL 4
 #### Source code: [ssfs.c]
-(https://github.com/fikrihaykal/SoalShiftSISOP20_modul4_T20/blob/master/ssfs.c)
+(https://github.com/fikrihaykal/SoalShiftSISOP20_modul4_T20/blob/master/ssfs.c)__
 #### Penjelasan Source code: 
 
 ```
@@ -621,11 +621,13 @@ void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[])
 - Fungsi `FILE *file = fopen(logsys, "a+");` merupakan proses untuk membuat _log file_ sesuai dengan _directory path_ yang telah ditentukan.
 - Fungsi `char timeTemp[100];` merupakan sebuah _buffer_ yang berguna untuk menyimpan waktu pemanggilan _system call_ tersebut dengan menggunakan fungsi `strftime(timeTemp, sizeof(timeTemp), "%y%m%d-%H:%M:%S", tm);`
 - Format logging dalam fungsi <b>catatLog()</b> akan dituliskan ke dalam _log file_ menggunakan fungsi `sprintf(logTemp, "%s::%s::%s::%d", lv, timeTemp, command, res);`
-- Untuk menunjukkan _absolute file path_ `desc[]`, maka perlu digunakan fungsi iterasi di bawah ini ```
+- Untuk menunjukkan _absolute file path_ `desc[]`, maka perlu digunakan fungsi iterasi di bawah ini 
+```
 for(int i=0; i<lenDesc; i++){
         sprintf(logTemp, "%s::%s", logTemp, desc[i]);
     }
-``` karena _absolute file path_ akan ditemukan sepanjang `lenDesc` yang menunjukkan panjang _file path_ tersebut.
+``` 
+karena _absolute file path_ akan ditemukan sepanjang `lenDesc` yang menunjukkan panjang _file path_ tersebut.
 <br />
 
 #### Tampilan pada Linux
