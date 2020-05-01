@@ -65,7 +65,8 @@ static struct fuse_operations xmp_oper = {
 - Selain itu, atribut pada `struct` tersebut tertulis seperti fungsi yang biasa digunakan di linux. Contohnya ialah saat kita membuat directory di FUSE maka fungsi mkdir akan dipanggil.
 <br />
 
-Fungsi `getattr` digunakan untuk Get file attributes.
+Fungsi `getattr` digunakan untuk Get file attributes. <br />
+Fungsi `getattr` yang dipanggil saat sistem mencoba untuk mendapatkan atribut dari sebuah file. 
 ```
 static int xmp_getattr(const char *path, struct stat * stbuf){
     int res = 0;
@@ -94,10 +95,10 @@ static int xmp_getattr(const char *path, struct stat * stbuf){
     return 0;
 }
 ```
-Fungsi `getattr` yang dipanggil saat sistem mencoba untuk mendapatkan atribut dari sebuah file. <br />
 <br />
 
-Fungsi `readdir` digunakan untuk Read directory.
+Fungsi `readdir` digunakan untuk Read directory. <br />
+Fungsi `readdir` yang dipanggil saat user mencoba untuk menampilkan file dan direktori yang berada pada suatu direktori yang spesifik.
 ```
 static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi){
     char fpath[1000];
@@ -152,7 +153,6 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_
     return 0;
 }
 ```
-Fungsi `readdir` yang dipanggil saat user mencoba untuk menampilkan file dan direktori yang berada pada suatu direktori yang spesifik. <br />
 <br />
 
 Fungsi `mkdir` digunakan untuk Create a directory
@@ -245,7 +245,8 @@ static int xmp_rmdir(const char *path){
 ```
 <br />
 
-Fungsi `read` digunakan untuk Read data from an open file
+Fungsi `read` digunakan untuk Read data from an open file <br />
+Fungsi read yang dipanggil saat sistem mencoba untuk membaca potongan demi potongan data dari suatu file.
 ```
 static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi){
     int res, fd;
@@ -283,7 +284,6 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset, stru
     return res;
 }
 ```
-Fungsi read yang dipanggil saat sistem mencoba untuk membaca potongan demi potongan data dari suatu file. <br />
 <br />
 
 Fungsi `mknod` digunakan untuk Create a file node.
@@ -615,11 +615,10 @@ void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[])
     fclose(file);
 }
 ```
-<br />
-- `static const char *logsys = "/home/fikri/Modul4/fs.txt";` berfungsi untuk meletakkan `log file` dengan nama <b>fs.txt</b> pada direktori <b>/home/fikri/Modul4</b>.
-- `void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[]){` akan mengatur format _logging_ yang sesuai dengan ketentuan _log file_ pada soal di tersebut antara lain `level` untuk menunjukkan _system_ call yang terjadi termasuk ke dalam level mana, `cmd` akan menunjukkan _system call_ yang terpanggil, `res` akan menyimpan status dari file tersebut, `lenDesc` akan menunjukkan panjang _file path_ dan `desc[]` akan menunjukkan _absolute file path_.
-- `FILE *file = fopen(logsys, "a+");` merupakan proses untuk membuat _log file_ sesuai dengan _directory path_ yang telah ditentukan.
-- `char timeTemp[100];` merupakan _sebuah buffer_ yang berguna untuk menyimpan waktu pemanggilan _system call_ tersebut dengan menggunakan fungsi `strftime(timeTemp, sizeof(timeTemp), "%y%m%d-%H:%M:%S", tm);`
+- Fungsi `static const char *logsys = "/home/fikri/Modul4/fs.txt";` berfungsi untuk meletakkan `log file` dengan nama <b>fs.txt</b> pada direktori <b>/home/fikri/Modul4</b>.
+- Fungsi `void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[]){` akan mengatur format _logging_ yang sesuai dengan ketentuan _log file_ pada soal di tersebut antara lain `level` untuk menunjukkan _system_ call yang terjadi termasuk ke dalam level mana, `cmd` akan menunjukkan _system call_ yang terpanggil, `res` akan menyimpan status dari file tersebut, `lenDesc` akan menunjukkan panjang _file path_ dan `desc[]` akan menunjukkan _absolute file path_.
+- Fungsi `FILE *file = fopen(logsys, "a+");` merupakan proses untuk membuat _log file_ sesuai dengan _directory path_ yang telah ditentukan.
+- Fungsi `char timeTemp[100];` merupakan sebuah _buffer_ yang berguna untuk menyimpan waktu pemanggilan _system call_ tersebut dengan menggunakan fungsi `strftime(timeTemp, sizeof(timeTemp), "%y%m%d-%H:%M:%S", tm);`
 - Format logging dalam fungsi <b>catatLog()</b> akan dituliskan ke dalam _log file_ menggunakan fungsi `sprintf(logTemp, "%s::%s::%s::%d", lv, timeTemp, command, res);`
 - Untuk menunjukkan _absolute file path_ `desc[]`, maka perlu digunakan fungsi iterasi di bawah ini
 ```
