@@ -41,7 +41,7 @@ Disini kami membuat direktori bernama <b> encv1_ </b>
 Perintah `./[output] [direktori tujuan]` digunakan untuk menjalankan FUSE pada direktori yang telah dibuat. <br />
 Untuk menjalankannya kami menggunakan perintah `./ssfs encv1_`
 
-##### Penjelasan Source Code
+#### Penjelasan Source Code
 Pada program ini memiliki `struct fuse_operations` yang didefinisikan seperti dibawah:
 ```
 static struct fuse_operations xmp_oper = {
@@ -548,8 +548,8 @@ static int xmp_open(const char *path, struct fuse_file_info *fi){
 <br />
 
 
-##### Tampilan pada Linux
-Menjalankan program
+#### Tampilan pada Linux
+Menjalankan program <br />
 ![proses 2](https://user-images.githubusercontent.com/16980689/80815401-c9f9dd80-8bf7-11ea-81de-d3181da6c9b0.PNG)
 <br />
 Direktori `soal` menampilkan file dan folder sebelum di enkripsi
