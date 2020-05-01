@@ -585,9 +585,8 @@ INFO::200419-18:29:33::RENAME::/iz1/yena.jpg::/iz1/yena.jpeg
 ```
 
 ### Penyelesaian SOAL 4
-#### Source code: [ssfs.c]
-(https://github.com/fikrihaykal/SoalShiftSISOP20_modul4_T20/blob/master/ssfs.c)__
-#### Penjelasan Source code: 
+#### ___Source Code : [ssfs.c](https://github.com/fikrihaykal/SoalShiftSISOP20_modul4_T20/blob/master/ssfs.c)___ 
+#### Penjelasan Source Code: 
 
 ```
 static const char *logsys = "/home/fikri/Modul4/fs.txt";
