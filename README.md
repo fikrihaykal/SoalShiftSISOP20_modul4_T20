@@ -583,3 +583,55 @@ INFO::200419-18:29:28::MKDIR::/iz1
 INFO::200419-18:29:33::CREAT::/iz1/yena.jpg
 INFO::200419-18:29:33::RENAME::/iz1/yena.jpg::/iz1/yena.jpeg
 ```
+
+### Penyelesaian SOAL 4
+#### Source code: [ssfs.c](https://github.com/fikrihaykal/SoalShiftSISOP20_modul4_T20/blob/master/ssfs.c)___ 
+<br />
+#### Penjelasan Source code:
+```
+static const char *logsys = "/home/fikri/Modul4/fs.txt";
+
+
+void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[]){
+    FILE *file = fopen(logsys, "a+");
+    time_t t;
+    struct tm *tm;
+    char timeTemp[100];
+    time(&t);
+    tm = localtime(&t);
+    
+    strftime(timeTemp, sizeof(timeTemp), "%y%m%d-%H:%M:%S", tm);
+
+    char logTemp[1000];
+    sprintf(logTemp, "%s::%s::%s::%d", lv, timeTemp, command, res);
+    
+    for(int i=0; i<lenDesc; i++){
+        sprintf(logTemp, "%s::%s", logTemp, desc[i]);
+    }
+
+    sprintf(logTemp, "%s\n", logTemp);
+
+    fputs(logTemp, file);
+
+    fclose(file);
+}
+```
+- `static const char *logsys = "/home/fikri/Modul4/fs.txt";` berfungsi untuk meletakkan `log file` dengan nama <b>fs.txt</b> pada direktori <b>/home/fikri/Modul4</b>.
+- `void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[]){` akan mengatur format _logging_ yang sesuai dengan ketentuan _log file_ pada soal di tersebut antara lain `level` untuk menunjukkan _system_ call yang terjadi termasuk ke dalam level mana, `cmd` akan menunjukkan _system call_ yang terpanggil, `res` akan menyimpan status dari file tersebut, `lenDesc` akan menunjukkan panjang _file path_ dan `desc[]` akan menunjukkan _absolute file path_.
+- `FILE *file = fopen(logsys, "a+");` merupakan proses untuk membuat _log file_ sesuai dengan _directory path_ yang telah ditentukan.
+- `char timeTemp[100];` merupakan _sebuah buffer_ yang berguna untuk menyimpan waktu pemanggilan _system call_ tersebut dengan menggunakan fungsi `strftime(timeTemp, sizeof(timeTemp), "%y%m%d-%H:%M:%S", tm);`
+- Format logging dalam fungsi <b>catatLog()</b> akan dituliskan ke dalam _log file_ menggunakan fungsi `sprintf(logTemp, "%s::%s::%s::%d", lv, timeTemp, command, res);`
+- Untuk menunjukkan _absolute file path_ `desc[]`, maka perlu digunakan fungsi iterasi di bawah ini
+```
+for(int i=0; i<lenDesc; i++){
+        sprintf(logTemp, "%s::%s", logTemp, desc[i]);
+    }
+```
+karena _absolute file path_ akan ditemukan sepanjang `lenDesc` yang menunjukkan panjang _file path_ tersebut.
+<br />
+
+#### Tampilan pada Linux
+Melihat daftar perintah system call yang telah dijalankan pada terminal
+![soal4](https://user-images.githubusercontent.com/16980689/80818738-f153a900-8bfd-11ea-8dbc-0b0a203d2284.PNG)
+Melihat daftar perintah system call yang telah dijalankan pada file <b>fs.txt</b>
+![soal4(2)](https://user-images.githubusercontent.com/16980689/80818733-ef89e580-8bfd-11ea-992e-cb6f726f3ca7.PNG)
