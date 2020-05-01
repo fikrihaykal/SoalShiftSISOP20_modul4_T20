@@ -41,8 +41,523 @@ Disini kami membuat direktori bernama <b> encv1_ </b>
 Perintah `./[output] [direktori tujuan]` digunakan untuk menjalankan FUSE pada direktori yang telah dibuat. <br />
 Untuk menjalankannya kami menggunakan perintah `./ssfs encv1_`
 
-##### Tampilan direktori `encv1_` setelah dijalankan pada linux
-![hasil run](https://user-images.githubusercontent.com/16980689/80702623-93df2f80-8b0b-11ea-94f5-8fb42610294c.PNG) <br />
+##### Penjelasan Source Code
+Pada program ini memiliki `struct fuse_operations` yang didefinisikan seperti dibawah:
+```
+static struct fuse_operations xmp_oper = {
+    .getattr = xmp_getattr,
+    .readdir = xmp_readdir,
+    .read = xmp_read,
+    .mkdir = xmp_mkdir,
+    .rmdir = xmp_rmdir,
+    .rename = xmp_rename,
+    .truncate = xmp_truncate,
+    .write = xmp_write,
+    .create = xmp_create,
+    .utimens = xmp_utimens,
+    .access = xmp_access,
+    .open = xmp_open,
+    .mknod = xmp_mknod,
+    .unlink = xmp_unlink,
+};
+```
+- Semua atribut pada `struct` tersebut adalah pointer yang menuju ke fungsi. Setiap fungsi tersebut disebut FUSE saat suatu kejadian yang spesifik terjadi di file system. Sebagai contoh saat user menulis di sebuah file, sebuah fungsi yang ditunjuk oleh atribut "write" di `struct` akan terpanggil. 
+- Selain itu, atribut pada `struct` tersebut tertulis seperti fungsi yang biasa digunakan di linux. Contohnya ialah saat kita membuat directory di FUSE maka fungsi mkdir akan dipanggil.
+<br />
+
+Fungsi `getattr` digunakan untuk Get file attributes.
+```
+static int xmp_getattr(const char *path, struct stat * stbuf){
+    int res = 0;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    res = lstat(fpath, stbuf);
+
+    const char *desc[] = {fpath};
+    catatLog("INFO", "GETATTR", res, 1, desc);
+    
+    if(res == -1){
+        return -errno;
+    }
+
+    return 0;
+}
+```
+Fungsi `getattr` yang dipanggil saat sistem mencoba untuk mendapatkan atribut dari sebuah file. <br />
+<br />
+
+Fungsi `readdir` digunakan untuk Read directory.
+```
+static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi){
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    DIR *dp;
+    struct dirent *de;
+    (void) offset;
+    (void) fi;
+    int res = 0;
+
+    dp = opendir(fpath);
+
+    if(dp == NULL){
+        return -errno;
+    }
+
+    while((de = readdir(dp)) != NULL){
+        struct stat st;
+        memset(&st, 0, sizeof(st));
+
+        st.st_ino = de->d_ino;
+        st.st_mode = de->d_type << 12;
+
+        printf("Before: %s\n", de->d_name);
+
+        if(dirTemp != NULL){
+            encryptDecrypt(de->d_name, 1);
+        }
+
+        printf("After: %s\n", de->d_name);
+
+        res = (filler(buf, de->d_name, &st, 0));
+
+        if(res != 0){
+            break;
+        }
+    }
+
+    closedir(dp);
+
+    return 0;
+}
+```
+Fungsi `readdir` yang dipanggil saat user mencoba untuk menampilkan file dan direktori yang berada pada suatu direktori yang spesifik. <br />
+<br />
+
+Fungsi `mkdir` digunakan untuk Create a directory
+```
+static int xmp_mkdir(const char *path, mode_t mode){
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    int res=0;
+    res = mkdir(fpath, mode);
+    
+    if(res == -1){
+        return -errno;
+    }
+
+    const char *desc[] = {fpath};
+    catatLog("INFO", "MKDIR", res, 1, desc);
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `rename` digunakan untuk Rename a file.
+```
+static int xmp_rename(const char *from, const char *to){
+    int res;
+    char fpath[1000], fpathf[1000];
+
+    char *dirTemp = strstr(to, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    sprintf(fpath, "%s%s", rootDir, from);
+    sprintf(fpathf, "%s%s", rootDir, to);
+
+    res = rename(fpath, fpathf);
+
+    if(res == -1){
+        return -errno;
+    }
+
+    const char *desc[] = {fpath, fpathf};
+    catatLog("INFO", "RENAME", res, 2, desc);
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `rmdir` digunakan untuk Remove a directory
+```
+static int xmp_rmdir(const char *path){
+    int res;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    res = rmdir(fpath);
+
+    if(res == -1){
+        return -errno;
+    }
+
+    const char *desc[] = {fpath};
+    catatLog("WARNING", "RMDIR", res, 1, desc);
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `read` digunakan untuk Read data from an open file
+```
+static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi){
+    int res, fd;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    res = 0;
+    fd = 0;
+    (void) fi;
+
+    fd = open(fpath, O_RDONLY);
+
+    if(fd == -1){
+        return -errno;
+    }
+
+    res = pread(fd, buf, size, offset);
+
+    if(res == -1){
+        res = -errno;
+    }
+
+    close(fd);
+
+    return res;
+}
+```
+Fungsi read yang dipanggil saat sistem mencoba untuk membaca potongan demi potongan data dari suatu file. <br />
+<br />
+
+Fungsi `mknod` digunakan untuk Create a file node.
+```
+static int xmp_mknod(const char *path, mode_t mode, dev_t rdev){
+    int res;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    if(S_ISREG(mode)){
+        res = open(path, O_CREAT | O_EXCL | O_WRONLY, mode);
+        if(res >= 0){
+            res = close(res);
+        }
+    } else if(S_ISFIFO(mode)){
+        res = mkfifo(path, mode);
+    } else {
+        res = mknod(path, mode, rdev);
+    }
+
+    if(res == -1){
+        return -errno;
+    }
+    
+    const char *desc[] = {fpath};
+    catatLog("INFO", "MKNODE", res, 1, desc);
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `unlink` digunakan untuk Remove a file.
+```
+static int xmp_unlink(const char *path){
+    int res;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    res = unlink(fpath);
+
+    if(res == -1){
+        return -errno;
+    }
+    
+    const char *desc[] = {fpath};
+    catatLog("WARNING", "UNLINK", res, 1, desc);
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `write` digunakan untuk Write data to an open file.
+```
+static int xmp_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi){
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+    
+    (void) fi;
+    int fd, res;
+    
+    fd = open(fpath, O_WRONLY);
+
+    if(fd == -1){
+        return -errno;
+    }
+    
+    res = pwrite(fd, buf, size, offset);
+
+    if(res == -1){
+        res = -errno;
+    }
+    
+    close(fd);
+    
+    return res;
+}
+```
+<br />
+
+Fungsi `truncate` digunakan untuk Change the size of a file.
+```
+static int xmp_truncate(const char *path, off_t size){
+    int res;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    res = truncate(fpath, size);
+    
+    if(res == -1){
+        return -errno;
+    }
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `create` digunakan untuk Create and open a file.
+```
+static int xmp_create(const char *path, mode_t mode, struct fuse_file_info *fi){
+    int res;
+    char fpath[1000];
+    (void)fi;
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    res = creat(fpath, mode);
+    
+    if(res == -1){
+        return -errno;
+    }
+
+    close(res);
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `utimens` digunakan untuk Change the access and modification times of a file with nanosecond resolution.
+```
+static int xmp_utimens(const char *path, const struct timespec ts[2]){
+    int res;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+	struct timeval tv[2];
+
+	tv[0].tv_sec = ts[0].tv_sec;
+	tv[0].tv_usec = ts[0].tv_nsec / 1000;
+	tv[1].tv_sec = ts[1].tv_sec;
+	tv[1].tv_usec = ts[1].tv_nsec / 1000;
+
+    res = utimes(fpath, tv);
+    
+    if(res == -1){
+        return -errno;
+    }
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `access` digunakan untuk Check file access permissions. <br />
+Fungsi ini akan dipanggil untuk panggilan sistem `access()`. Jika opsi mount `'default_permissions'` diberikan, metode ini tidak dipanggil.
+```
+static int xmp_access(const char *path, int mask){
+    int res;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    res = access(fpath, mask);
+    
+    if(res == -1){
+        return -errno;
+    }
+
+    return 0;
+}
+```
+<br />
+
+Fungsi `open` digunakan untuk Open a file.
+```
+static int xmp_open(const char *path, struct fuse_file_info *fi){
+    int res;
+    char fpath[1000];
+
+    char *dirTemp = strstr(path, enkripsiSatu);
+    if(dirTemp != NULL){
+        encryptDecrypt(dirTemp, 0);
+    }
+
+    if(strcmp(path, "/") == 0){
+        sprintf(fpath, "%s", rootDir);
+    } else{
+        sprintf(fpath, "%s%s", rootDir, path);
+    }
+
+    res = access(fpath, fi->flags);
+    
+    if(res == -1){
+        return -errno;
+    }
+
+    close(res);
+    return 0;
+}
+```
+<br />
+
+
+##### Tampilan pada Linux
+Menjalankan program
+![proses 2](https://user-images.githubusercontent.com/16980689/80815401-c9f9dd80-8bf7-11ea-81de-d3181da6c9b0.PNG)
+<br />
+Direktori `soal` menampilkan file dan folder sebelum di enkripsi
+![sebelum enkrip](https://user-images.githubusercontent.com/16980689/80815787-7c31a500-8bf8-11ea-87ab-65569f7aadbf.PNG)
+<br />
+Direktori `encv1_` menampilkan file dan folder hasil enkripsi (setelah program dijalankan)
+![sesudah enkrip](https://user-images.githubusercontent.com/16980689/80815817-85bb0d00-8bf8-11ea-9914-410aab11704c.PNG)
+<br />
 
 ### SOAL 4
 Log system:
