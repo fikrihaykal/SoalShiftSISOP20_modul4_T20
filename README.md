@@ -42,12 +42,29 @@ Perintah `./[output] [direktori tujuan]` digunakan untuk menjalankan FUSE pada d
 Untuk menjalankannya kami menggunakan perintah `./ssfs encv1_`
 
 #### Penjelasan Source Code
+Untuk mendukung pembuatan program mengenai metode enkripsi tersebut, maka kita harus membuat fungsi `system call` yang bertujuan untuk mengatur 3 (tiga) keperluan tertentu sesuai permintaan soal :
+- `mkdir`  : kondisi dimana terjadi pembuatan directory yang telah ditentukan.
+- `create` : kondisi dimana terjadi proses rename pada directory sesuai dengan nama yang telah ditentukan.
+- `write`  : kondisi dimana terjadi penyimpanan perubahan pada database/log pada file.
+<br />
 Fungsi ini digunakan agar FUSE dapat menampilkan apa yang ada di dalam folder `/home/fikri/Documents` <br />
-`static const char *rootDir = "/home/fikri/Documents";`
+```
+static const char *rootDir = "/home/fikri/Documents";
+```
 
 Fungsi ini akan melakukan input key untuk enkripsi caesar chiper pada file yang ada pada suatu direktori dengan direktori `encv1_` <br />
 ```
 static const char *key = {"9(ku@AW1[Lmvgax6q`5Y2Ry?+sF!^HKQiBXCUSe&0M.b%rI'7d)o4~VfZ*{#:}ETt$3J-zpc]lnh8,GwP_ND|jO"};
+```
+
+Pendeklarasian fungsi `enkripsiSatu, encryptDecrypt, catatLog, findAwal dan findAkhir`
+```
+char enkripsiSatu[10] = "encv1_";
+
+void encryptDecrypt(char *path, int method);
+void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[]);
+int findAwal(char *path, int st);
+int findAkhir(char *path);
 ```
 
 Pada program ini memiliki `struct fuse_operations` yang didefinisikan seperti dibawah:
@@ -82,7 +99,7 @@ int main(int argc, char *argv[]){
 ```
 <br />
 
-Fungsi `getattr` digunakan untuk Get file attributes. <br />
+Fungsi `getattr` digunakan untuk Mendapatkan atribut file. <br />
 Fungsi `getattr` yang dipanggil saat sistem mencoba untuk mendapatkan atribut dari sebuah file. 
 ```
 static int xmp_getattr(const char *path, struct stat * stbuf){
@@ -114,7 +131,7 @@ static int xmp_getattr(const char *path, struct stat * stbuf){
 ```
 <br />
 
-Fungsi `readdir` digunakan untuk Read directory. <br />
+Fungsi `readdir` digunakan untuk Membaca directory. <br />
 Fungsi `readdir` yang dipanggil saat user mencoba untuk menampilkan file dan direktori yang berada pada suatu direktori yang spesifik.
 ```
 static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi){
@@ -172,7 +189,7 @@ static int xmp_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_
 ```
 <br />
 
-Fungsi `mkdir` digunakan untuk Create a directory
+Fungsi `mkdir` digunakan untuk membuat sebuah directory
 ```
 static int xmp_mkdir(const char *path, mode_t mode){
     char fpath[1000];
@@ -203,7 +220,7 @@ static int xmp_mkdir(const char *path, mode_t mode){
 ```
 <br />
 
-Fungsi `rename` digunakan untuk Rename a file.
+Fungsi `rename` digunakan untuk mengganti nama file maupun folder.
 ```
 static int xmp_rename(const char *from, const char *to){
     int res;
@@ -231,7 +248,7 @@ static int xmp_rename(const char *from, const char *to){
 ```
 <br />
 
-Fungsi `rmdir` digunakan untuk Remove a directory
+Fungsi `rmdir` digunakan untuk Remove sebuah directory
 ```
 static int xmp_rmdir(const char *path){
     int res;
@@ -262,7 +279,7 @@ static int xmp_rmdir(const char *path){
 ```
 <br />
 
-Fungsi `read` digunakan untuk Read data from an open file <br />
+Fungsi `read` digunakan untuk membaca data dari file yang telah dibuka (terbuka) <br />
 Fungsi read yang dipanggil saat sistem mencoba untuk membaca potongan demi potongan data dari suatu file.
 ```
 static int xmp_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi){
@@ -303,7 +320,7 @@ static int xmp_read(const char *path, char *buf, size_t size, off_t offset, stru
 ```
 <br />
 
-Fungsi `mknod` digunakan untuk Create a file node.
+Fungsi `mknod` digunakan untuk membuat sebuah file node.
 ```
 static int xmp_mknod(const char *path, mode_t mode, dev_t rdev){
     int res;
@@ -343,7 +360,7 @@ static int xmp_mknod(const char *path, mode_t mode, dev_t rdev){
 ```
 <br />
 
-Fungsi `unlink` digunakan untuk Remove a file.
+Fungsi `unlink` digunakan untuk Remove sebuah file.
 ```
 static int xmp_unlink(const char *path){
     int res;
@@ -412,7 +429,7 @@ static int xmp_write(const char *path, const char *buf, size_t size, off_t offse
 ```
 <br />
 
-Fungsi `truncate` digunakan untuk Change the size of a file.
+Fungsi `truncate` digunakan untuk mengubah ukuran file.
 ```
 static int xmp_truncate(const char *path, off_t size){
     int res;
@@ -440,7 +457,7 @@ static int xmp_truncate(const char *path, off_t size){
 ```
 <br />
 
-Fungsi `create` digunakan untuk Create and open a file.
+Fungsi `create` digunakan untuk membuat dan membuka sebuah file.
 ```
 static int xmp_create(const char *path, mode_t mode, struct fuse_file_info *fi){
     int res;
@@ -471,7 +488,7 @@ static int xmp_create(const char *path, mode_t mode, struct fuse_file_info *fi){
 ```
 <br />
 
-Fungsi `utimens` digunakan untuk Change the access and modification times of a file with nanosecond resolution.
+Fungsi `utimens` digunakan untuk mengubah waktu akses dan modifikasi file dengan resolusi nanodetik.
 ```
 static int xmp_utimens(const char *path, const struct timespec ts[2]){
     int res;
@@ -506,7 +523,7 @@ static int xmp_utimens(const char *path, const struct timespec ts[2]){
 ```
 <br />
 
-Fungsi `access` digunakan untuk Check file access permissions. <br />
+Fungsi `access` digunakan untuk melakukan pemeriksaan izin akses file. <br />
 Fungsi ini akan dipanggil untuk panggilan sistem `access()`. Jika opsi mount `'default_permissions'` diberikan, metode ini tidak dipanggil.
 ```
 static int xmp_access(const char *path, int mask){
@@ -535,7 +552,7 @@ static int xmp_access(const char *path, int mask){
 ```
 <br />
 
-Fungsi `open` digunakan untuk Open a file.
+Fungsi `open` digunakan untuk membuka sebuah file.
 ```
 static int xmp_open(const char *path, struct fuse_file_info *fi){
     int res;
@@ -564,7 +581,7 @@ static int xmp_open(const char *path, struct fuse_file_info *fi){
 ```
 <br />
 
-Fungsi untuk Encrypt dan Decrypt
+Fungsi `encryptDecrypt` digunakan untuk melakukan proses enkripsi dan dekripsi pada suatu file/folder.
 ```
 void encryptDecrypt(char *path, int method){
     if(!strcmp(path, ".") || !strcmp(path, "..")){
@@ -640,6 +657,15 @@ Direktori `soal` menampilkan file dan folder sebelum di enkripsi
 Direktori `encv1_` menampilkan file dan folder hasil enkripsi (setelah program dijalankan)
 ![sesudah enkrip](https://user-images.githubusercontent.com/16980689/80815817-85bb0d00-8bf8-11ea-9914-410aab11704c.PNG)
 <br />
+
+
+### SOAL 2
+![S__11214850](https://user-images.githubusercontent.com/16980689/80863047-a0968b80-8ca3-11ea-8020-abf94165b0e4.jpg)
+
+
+### SOAL 3
+![S__11214850](https://user-images.githubusercontent.com/16980689/80863047-a0968b80-8ca3-11ea-8020-abf94165b0e4.jpg)
+
 
 ### SOAL 4
 Log system:
