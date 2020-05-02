@@ -80,7 +80,7 @@ int findAwal(char *path, int st);
 int findAkhir(char *path);
 ```
 
-Pada program ini memiliki `struct fuse_operations` yang didefinisikan seperti dibawah:
+Pada program ini memiliki `struct fuse_operations` yang jika dipanggil akan menjalankan fungsinya, `fuse_operations` didefinisikan seperti dibawah:
 ```
 static struct fuse_operations xmp_oper = {
     .getattr = xmp_getattr,
