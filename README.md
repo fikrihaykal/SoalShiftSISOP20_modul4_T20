@@ -48,6 +48,20 @@ Untuk mendukung pembuatan program mengenai metode enkripsi tersebut, maka kita h
 - `write`  : kondisi dimana terjadi penyimpanan perubahan pada database/log pada file.
 <br />
 
+List library yang akan digunakan
+```
+#define FUSE_USE_VERSION 28
+#include <fuse.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <dirent.h>
+#include <errno.h>
+#include <sys/time.h>
+#include <time.h>
+```
+
 Fungsi ini digunakan agar FUSE dapat menampilkan apa yang ada di dalam folder `/home/fikri/Documents` <br />
 ```static const char *rootDir = "/home/fikri/Documents";```
 
