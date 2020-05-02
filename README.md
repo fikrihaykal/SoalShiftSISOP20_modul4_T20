@@ -42,6 +42,9 @@ Perintah `./[output] [direktori tujuan]` digunakan untuk menjalankan FUSE pada d
 Untuk menjalankannya kami menggunakan perintah `./ssfs encv1_`
 
 #### Penjelasan Source Code
+Fungsi ini digunakan agar FUSE dapat menampilkan apa yang ada di dalam folder /home/fikri/Documents. <br />
+`static const char *rootDir = "/home/fikri/Documents";`
+
 Pada program ini memiliki `struct fuse_operations` yang didefinisikan seperti dibawah:
 ```
 static struct fuse_operations xmp_oper = {
@@ -587,6 +590,37 @@ void encryptDecrypt(char *path, int method){
             }
         }
     }
+}
+```
+<br />
+
+Fungsi `int findAwal` digunakan untuk mencari huruf pertama nama file setelah <b>/</b>.
+```
+int findAwal(char *path, int st){
+    int pLen = strlen(path);
+
+    for(int i =0; i<pLen; i++){
+        if(path[i] == '/'){
+            return i+1;
+        }
+    }
+    return st;
+}
+
+```
+<br />
+
+Fungsi `int findAkhir` digunakan untuk mencari huruf setelah <b>.</b>, pencarian dimulai dari urutan paling akhir.
+```
+int findAkhir(char *path){
+    int pLen = strlen(path);
+
+    for(int i=pLen-1; i>=0; i--){
+        if(path[i] == '.'){
+            return i;
+        }
+    }
+    return pLen;
 }
 ```
 <br />
