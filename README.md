@@ -616,7 +616,7 @@ void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[])
 }
 ```
 - Fungsi `static const char *logsys = "/home/fikri/Modul4/fs.txt";` berfungsi untuk meletakkan `log file` dengan nama <b>fs.txt</b> pada direktori <b>/home/fikri/Modul4</b>.
-- Fungsi `void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[]){` akan mengatur format _logging_ yang sesuai dengan ketentuan _log file_ pada soal di tersebut antara lain `level` untuk menunjukkan _system_ call yang terjadi termasuk ke dalam level mana, `cmd` akan menunjukkan _system call_ yang terpanggil, `res` akan menyimpan status dari file tersebut, `lenDesc` akan menunjukkan panjang _file path_ dan `desc[]` akan menunjukkan _absolute file path_.
+- Fungsi `void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[]){` akan mengatur format _logging_ yang sesuai dengan ketentuan _log file_ pada soal tersebut antara lain `level` untuk menunjukkan _system_ call yang terjadi termasuk ke dalam level mana, `cmd` akan menunjukkan _system call_ yang terpanggil, `res` akan menyimpan status dari file tersebut, `lenDesc` akan menunjukkan panjang _file path_ dan `desc[]` akan menunjukkan _absolute file path_.
 - Fungsi `FILE *file = fopen(logsys, "a+");` merupakan proses untuk membuat _log file_ sesuai dengan _directory path_ yang telah ditentukan.
 - Fungsi `char timeTemp[100];` merupakan sebuah _buffer_ yang berguna untuk menyimpan waktu pemanggilan _system call_ tersebut dengan menggunakan fungsi `strftime(timeTemp, sizeof(timeTemp), "%y%m%d-%H:%M:%S", tm);`
 - Format logging dalam fungsi <b>catatLog()</b> akan dituliskan ke dalam _log file_ menggunakan fungsi `sprintf(logTemp, "%s::%s::%s::%d", lv, timeTemp, command, res);`
