@@ -556,6 +556,40 @@ static int xmp_open(const char *path, struct fuse_file_info *fi){
 ```
 <br />
 
+Fungsi untuk Encrypt dan Decrypt
+```
+void encryptDecrypt(char *path, int method){
+    if(!strcmp(path, ".") || !strcmp(path, "..")){
+        return;
+    }
+
+    int cnt, sw, charAwal, charAkhir;
+    
+    charAkhir = findAkhir(path);
+
+    if(method == 1){
+        sw = 10;
+        charAwal = findAwal(path, 0);
+    } else if(method == 0){
+        sw = strlen(key) - 10;
+        charAwal = findAwal(path, charAkhir);
+    }
+
+    for(int i=charAwal; i<charAkhir; i++){
+        if(path[i] != '/'){
+            for(int j=0; j<strlen(key); j++){
+                if(key[j] == path[i]){
+                    cnt = (j+sw) % strlen(key);
+                    path[i] = key[cnt];
+
+                    break;
+                }
+            }
+        }
+    }
+}
+```
+<br />
 
 #### Tampilan pada Linux
 Menjalankan program <br />
