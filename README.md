@@ -615,7 +615,7 @@ void encryptDecrypt(char *path, int method){
 ```
 <br />
 
-Fungsi `int findAwal` digunakan untuk mencari huruf pertama nama file setelah <b>/</b>.
+Fungsi `int findAwal` digunakan untuk mencari huruf pertama nama file setelah `/`.
 ```
 int findAwal(char *path, int st){
     int pLen = strlen(path);
@@ -631,7 +631,7 @@ int findAwal(char *path, int st){
 ```
 <br />
 
-Fungsi `int findAkhir` digunakan untuk mencari huruf setelah <b>.</b>, pencarian dimulai dari urutan paling akhir.
+Fungsi `int findAkhir` digunakan untuk mencari huruf setelah `.`, pencarian dimulai dari urutan paling akhir.
 ```
 int findAkhir(char *path){
     int pLen = strlen(path);
