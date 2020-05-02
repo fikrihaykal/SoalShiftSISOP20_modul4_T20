@@ -63,7 +63,9 @@ List library yang akan digunakan pada program ini
 ```
 
 Fungsi ini digunakan agar FUSE dapat menampilkan apa yang ada di dalam folder `/home/fikri/Documents` <br />
-```static const char *rootDir = "/home/fikri/Documents";```
+```
+static const char *rootDir = "/home/fikri/Documents";
+```
 
 Fungsi ini akan melakukan input key untuk enkripsi caesar chiper pada file yang ada pada suatu direktori dengan direktori `encv1_` <br />
 ```
