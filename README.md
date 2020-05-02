@@ -711,3 +711,8 @@ Melihat daftar perintah system call yang telah dijalankan pada terminal
 ![soal4](https://user-images.githubusercontent.com/16980689/80818738-f153a900-8bfd-11ea-8dbc-0b0a203d2284.PNG) <br />
 Melihat daftar perintah system call yang telah dijalankan pada file <b>fs.txt</b>
 ![soal4(2)](https://user-images.githubusercontent.com/16980689/80818733-ef89e580-8bfd-11ea-992e-cb6f726f3ca7.PNG)
+
+
+## KENDALA
+Bobot soal semakin susah dan sulit dipahami <br />  
+Kami hanya sanggup mengerjakan soal nomor 1 dan 4 :)
