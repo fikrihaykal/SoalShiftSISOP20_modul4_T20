@@ -48,7 +48,7 @@ Untuk mendukung pembuatan program mengenai metode enkripsi tersebut, maka kita h
 - `write`  : kondisi dimana terjadi penyimpanan perubahan pada database/log pada file.
 <br />
 
-List library yang akan digunakan
+List library yang akan digunakan pada program ini
 ```
 #define FUSE_USE_VERSION 28
 #include <fuse.h>
