@@ -65,6 +65,15 @@ static struct fuse_operations xmp_oper = {
 - Selain itu, atribut pada `struct` tersebut tertulis seperti fungsi yang biasa digunakan di linux. Contohnya ialah saat kita membuat directory di FUSE maka fungsi mkdir akan dipanggil.
 <br />
 
+Fungsi `fuse_main()` (lib/helper.c) = sebagai fungsi _main_ (userspace), program user memanggil fungsi fuse_main() kemudian fungsi fuse_mount() dipanggil.
+```
+int main(int argc, char *argv[]){
+	umask(0);
+	return fuse_main(argc, argv, &xmp_oper, NULL);
+}
+```
+<br />
+
 Fungsi `getattr` digunakan untuk Get file attributes. <br />
 Fungsi `getattr` yang dipanggil saat sistem mencoba untuk mendapatkan atribut dari sebuah file. 
 ```
@@ -620,13 +629,12 @@ void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[])
 - Fungsi `FILE *file = fopen(logsys, "a+");` merupakan proses untuk membuat _log file_ sesuai dengan _directory path_ yang telah ditentukan.
 - Fungsi `char timeTemp[100];` merupakan sebuah _buffer_ yang berguna untuk menyimpan waktu pemanggilan _system call_ tersebut dengan menggunakan fungsi `strftime(timeTemp, sizeof(timeTemp), "%y%m%d-%H:%M:%S", tm);`
 - Format logging dalam fungsi <b>catatLog()</b> akan dituliskan ke dalam _log file_ menggunakan fungsi `sprintf(logTemp, "%s::%s::%s::%d", lv, timeTemp, command, res);`
-- Untuk menunjukkan _absolute file path_ `desc[]`, maka perlu digunakan fungsi iterasi di bawah ini <br />
+- Untuk menunjukkan _absolute file path_ `desc[]`, maka perlu digunakan fungsi iterasi di bawah ini
 ```
 for(int i=0; i<lenDesc; i++){
         sprintf(logTemp, "%s::%s", logTemp, desc[i]);
     }
 ``` 
-<br />
 karena _absolute file path_ akan ditemukan sepanjang `lenDesc` yang menunjukkan panjang _file path_ tersebut.
 <br />
 
