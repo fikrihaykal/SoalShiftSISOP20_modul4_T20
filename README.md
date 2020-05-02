@@ -26,8 +26,8 @@ Misal kan ada file bernama “kelincilucu.jpg” dalam directory FOTO_PENTING, d
 - Metode enkripsi pada suatu direktori juga berlaku kedalam direktori lainnya yang ada didalamnya.
 
 ### Penyelesaian SOAL 1
-- Masuk ke directory Modul4 <br />
-Syntax : `cd Documents/modul4/fuse`
+- Masuk ke directory soal <br />
+Syntax : `cd Documents/modul4/soal`
 - Membuat file <b>ssfs.c</b> yang berisi program FUSE<br />
 Syntax : `nano ssfs.c` <br />
 ___source code : [ssfs.c](https://github.com/fikrihaykal/SoalShiftSISOP20_modul4_T20/blob/master/ssfs.c)___ <br />
@@ -693,6 +693,11 @@ INFO::200419-18:29:33::RENAME::/iz1/yena.jpg::/iz1/yena.jpeg
 ```
 
 ### Penyelesaian SOAL 4
+- Masuk ke directory Modul4 <br />
+Syntax : `cd Documents/modul4/`
+- Melihat isi file `fs.txt` yang berisi daftar perintah system call yang telah dijalankan. <br />
+Syntax : `cat fs.txt`
+
 #### ___Source Code : [ssfs.c](https://github.com/fikrihaykal/SoalShiftSISOP20_modul4_T20/blob/master/ssfs.c)___ 
 #### Penjelasan Source Code: 
 
