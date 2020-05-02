@@ -47,8 +47,9 @@ Untuk mendukung pembuatan program mengenai metode enkripsi tersebut, maka kita h
 - `create` : kondisi dimana terjadi proses rename pada directory sesuai dengan nama yang telah ditentukan.
 - `write`  : kondisi dimana terjadi penyimpanan perubahan pada database/log pada file.
 <br />
+
 Fungsi ini digunakan agar FUSE dapat menampilkan apa yang ada di dalam folder `/home/fikri/Documents` <br />
-`static const char *rootDir = "/home/fikri/Documents";`
+```static const char *rootDir = "/home/fikri/Documents";```
 
 Fungsi ini akan melakukan input key untuk enkripsi caesar chiper pada file yang ada pada suatu direktori dengan direktori `encv1_` <br />
 ```
