@@ -70,10 +70,13 @@ Fungsi ini akan melakukan input key untuk enkripsi caesar chiper pada file yang 
 static const char *key = {"9(ku@AW1[Lmvgax6q`5Y2Ry?+sF!^HKQiBXCUSe&0M.b%rI'7d)o4~VfZ*{#:}ETt$3J-zpc]lnh8,GwP_ND|jO"};
 ```
 
-Pendeklarasian fungsi `enkripsiSatu, encryptDecrypt, catatLog, findAwal dan findAkhir`
+Fungsi dibawah ini digunakan untuk mengenkripsi sebuah direktori yang dibuat dengan awalan `encv1_` <br />
 ```
 char enkripsiSatu[10] = "encv1_";
+```
 
+Pendeklarasian fungsi `encryptDecrypt, catatLog, findAwal dan findAkhir`
+```
 void encryptDecrypt(char *path, int method);
 void catatLog(char *lv, char *command, int res, int lenDesc, const char *desc[]);
 int findAwal(char *path, int st);
